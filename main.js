@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         扇贝单词手柄快捷键+深色模式
-// @namespace    null
+// @namespace    https://github.com/AHPxLIS/shanbayController
 // @version      0.5
 // @description  为扇贝单词网页添加深色模式支持以及手柄快捷键，可自定义按键映射
 // @author       AhpGFlis
@@ -13,7 +13,7 @@
 // @license      MIT
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
     // 使用滤镜组合实现自然颜色反转
@@ -123,7 +123,7 @@
     });
     console.log("扇贝单词深色模式脚本已加载");
 
-   // 默认手柄按键映射配置
+    // 默认手柄按键映射配置
     const DEFAULT_KEY_MAPPING = {
         0: "2",   // A按钮 - 提示一下/没想起来
         1: "1",   // B按钮 - 认识/想起来了
@@ -312,7 +312,7 @@
     // 获取或初始化按键映射
     function getKeyMapping() {
         const savedMapping = GM_getValue('keyMapping');
-        return savedMapping ? JSON.parse(savedMapping) : {...DEFAULT_KEY_MAPPING};
+        return savedMapping ? JSON.parse(savedMapping) : { ...DEFAULT_KEY_MAPPING };
     }
 
     // 存储当前连接的手柄
@@ -470,7 +470,7 @@
             }
 
             // 添加点击事件监听
-            btnCell.addEventListener('click', function() {
+            btnCell.addEventListener('click', function () {
                 if (!isListeningForButton) {
                     startListeningForButton(this, shortcut.key);
                 }
@@ -505,7 +505,7 @@
         const closeBtn = document.createElement('button');
         closeBtn.className = 'gamepad-config-btn gamepad-close-btn';
         closeBtn.textContent = '关闭';
-        closeBtn.addEventListener('click', function() {
+        closeBtn.addEventListener('click', function () {
             document.body.removeChild(overlay);
             document.body.removeChild(container);
         });
