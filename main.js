@@ -2,6 +2,7 @@
 // @name         扇贝单词手柄快捷键+深色模式
 // @namespace    https://github.com/AHPxLIS/shanbayController
 // @version      0.5
+// @icon         https://static.baydn.com/static/img/shanbay_favicon.png
 // @description  为扇贝单词网页添加深色模式支持以及手柄快捷键，可自定义按键映射
 // @author       AhpGFlis
 // @match        https://web.shanbay.com/*
