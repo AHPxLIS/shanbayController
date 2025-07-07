@@ -11,6 +11,8 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_registerMenuCommand
+// @downloadURL  https://scriptcat.org/scripts/code/3741/%E6%89%87%E8%B4%9D%E5%8D%95%E8%AF%8D%E6%89%8B%E6%9F%84%E5%BF%AB%E6%8D%B7%E9%94%AE%2B%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F.user.js
+// @updateURL    https://scriptcat.org/scripts/code/3741/%E6%89%87%E8%B4%9D%E5%8D%95%E8%AF%8D%E6%89%8B%E6%9F%84%E5%BF%AB%E6%8D%B7%E9%94%AE%2B%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F.user.js
 // @license      MIT
 // ==/UserScript==
 
