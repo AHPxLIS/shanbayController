@@ -19,7 +19,9 @@
 | 例句发音               | v        | Y 按钮 (PS △)           |
 
 支持的按键如下图索引的0~15按键
-<img src="https://www.w3.org/TR/gamepad/standard_gamepad.svg" style="background-color: white;" />
+<div style="background-color: white; display: inline-block; padding: 10px; border-radius: 8px;">
+  <img src="https://www.w3.org/TR/gamepad/standard_gamepad.svg" width="500" />
+</div>
 
 ### 2、深色模式
 官方的网页端没有适配深色模式，我用简单的颜色反转滤镜实现了一下全局的深色模式，装上即开启(可临时关闭)
