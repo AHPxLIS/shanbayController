@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         扇贝单词手柄快捷键+深色模式
 // @namespace    https://github.com/AHPxLIS/shanbayController
-// @version      0.5
+// @version      0.6
 // @icon         https://static.baydn.com/static/img/shanbay_favicon.png
 // @description  为扇贝单词网页添加深色模式支持以及手柄快捷键，可自定义按键映射
 // @author       AhpGFlis
@@ -15,6 +15,10 @@
 // ==/UserScript==
 
 (function () {
+
+    /*
+     ######深色模式部分######
+    */
     'use strict';
 
     // 使用滤镜组合实现自然颜色反转
@@ -122,8 +126,41 @@
             el.style.setProperty('background-color', 'transparent', 'important');
         });
     });
-    console.log("扇贝单词深色模式脚本已加载");
+    console.log("扇贝单词深色模式已加载");
 
+    let isDarkMode = true;
+    // 禁用深色模式
+    function disableDarkMode() {
+
+        // 移除通过GM_addStyle添加的样式
+        const styleElements = document.querySelectorAll('style');
+        styleElements.forEach(style => {
+            if (style.textContent.includes('invert(1) hue-rotate(180deg)')) {
+                style.remove();
+            }
+        });
+        
+        // 重置html元素的filter属性
+        document.documentElement.style.filter = '';
+        document.documentElement.style.transition = '';
+        
+        // 重置所有被排除元素的filter属性
+        document.querySelectorAll('img, video, iframe, [class*="image"], [class*="icon"], [class*="logo"]').forEach(el => {
+            el.style.filter = '';
+        });
+        
+        // 重置内联背景色
+        document.querySelectorAll('[style*="background"]').forEach(el => {
+            el.style.removeProperty('background-color');
+        });
+        isDarkMode = false;
+        console.log("扇贝单词深色模式已禁用");
+    }
+    
+     
+    /*
+     ######手柄部分######
+    */
     // 默认手柄按键映射配置
     const DEFAULT_KEY_MAPPING = {
         0: "2",   // A按钮 - 提示一下/没想起来
@@ -153,7 +190,7 @@
 
     // 手柄按钮标签
     const GAMEPAD_BUTTON_LABELS = {
-        0: "A 按钮 (PS ✖)",
+        0: "A 按钮 (PS X)",
         1: "B 按钮 (PS ○)",
         2: "X 按钮 (PS □)",
         3: "Y 按钮 (PS △)",
@@ -178,8 +215,8 @@
             right: 20px;
             width: 45px;
             height: 45px;
-            border-radius: 50%;
-            background-color: #4CAF50;
+            border-radius: 6px;
+            background-color: #1c9a81;
             color: white;
             font-size: 20px;
             display: flex;
@@ -265,6 +302,11 @@
             background-color: #4CAF50;
             color: white;
         }
+        
+        .gamepad-disableDarkMode-btn {
+            background-color: #000000;
+            color: white;
+        }
 
         .gamepad-reset-btn {
             background-color: #f39c12;
@@ -305,10 +347,6 @@
             to { opacity: 1; }
         }
     `);
-
-    /*
-     ###手柄部分###
-    */
 
     // 获取或初始化按键映射
     function getKeyMapping() {
@@ -389,9 +427,23 @@
     function createFloatingButton() {
         const floatBtn = document.createElement('div');
         floatBtn.className = 'gamepad-float-btn';
-        floatBtn.textContent = '🎮';
         floatBtn.title = '配置手柄按键映射';
         floatBtn.addEventListener('click', createConfigWindow);
+        
+        // xbox手柄SVG
+        floatBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 128 128">
+                <g transform="translate(12, 12)">
+                    <style>
+                        path { fill: white !important; } /* 强制覆盖所有路径 */
+                    </style>
+                    <path
+                        d="M34 15c2.373.098 4.75.13 7.125.133l2.13.003c1.486 0 2.972-.001 4.458-.006 2.278-.005 4.556 0 6.834.007 1.443 0 2.885-.002 4.328-.004l3.992-.004c3.038.088 3.038.088 5.133-1.129 6.254-.056 11.226.692 16 5 1.625 2.75 1.625 2.75 3 6l1.824 3.406c2.792 5.55 4.527 11.425 6.363 17.344l1.077 3.402c6.55 20.805 6.55 20.805 2.049 30.473-6.056 6.22-6.056 6.22-9.75 6.677-3.171-.374-3.99-1.186-6.122-3.513-.632-.669-1.266-1.336-1.919-2.024a1027.03 1027.03 0 00-1.958-2.14 387.923 387.923 0 00-3.87-4.15c-.566-.617-1.13-1.235-1.713-1.872-5.95-4.822-13.633-3.943-20.865-3.92-2.044.003-4.086-.02-6.129-.045-9.118-.006-14.888.131-21.556 6.715a423.698 423.698 0 00-5.356 5.815c-4.428 4.687-4.428 4.687-7.773 5.428-2.633-.684-3.978-1.524-5.987-3.348l-1.762-1.547c-4.238-4.655-4.084-9.383-3.995-15.46C.185 57.885 3.272 49.86 6 42l.825-2.392c.77-2.209 1.56-4.41 2.362-6.608l.72-1.976C11.214 27.589 12.688 24.848 15 22l1.188-2.562C19.958 14.367 28.21 12.104 34 15zM20 25c-3.414 3.754-5.209 7.53-6.797 12.285l-.723 2.112c-.5 1.472-.993 2.945-1.481 4.42a499.996 499.996 0 01-2.285 6.642C4.452 62.5 4.452 62.5 5 75c2.002 2.62 4.16 4.348 7 6l1.222-1.253a1825 1825 0 015.528-5.622l1.922-1.973 1.875-1.894 1.714-1.746c4.596-3.995 8.807-3.832 14.67-3.848l2.63-.02c1.834-.01 3.668-.015 5.502-.015 2.796-.005 5.591-.041 8.387-.08 1.784-.005 3.57-.01 5.355-.01l2.52-.044c6.313.049 9.663 1.875 14.458 6.06l1.428 1.46 1.583 1.601 1.582 1.633 1.652 1.68A1005.37 1005.37 0 0188 81c2.848-1.656 4.96-3.403 7-6 1.989-9.098-1.47-18.18-4.425-26.675a408.47 408.47 0 01-2.225-6.653c-.483-1.43-.968-2.86-1.455-4.29l-.651-1.979c-2.077-5.87-4.92-10.055-10.37-13.215C62.315 17.313 31.943 15.957 20 25z" />
+                    <path
+                        d="M41 46c2 1 2 1 3 3 .52 3.564.63 6.738-1 10-3.262 1.63-6.436 1.52-10 1-2-1-2-1-3-3-.52-3.564-.63-6.738 1-10 3.262-1.63 6.436-1.52 10-1zM59.875 43.734L62 43.75l2.125-.016C66 44 66 44 68 46c.266 1.875.266 1.875.25 4l.015 2.124C68 54 68 54 66 56c-1.875.265-1.875.265-4 .25l-2.125.014C58 56 58 56 56 54c-.266-1.875-.266-1.875-.25-4l-.015-2.126c.383-2.713 1.424-3.754 4.14-4.14zM23.875 29.734L26 29.75l2.125-.016C30 30 30 30 32 32c.266 1.875.266 1.875.25 4l.015 2.124C32 40 32 40 30 42c-1.875.265-1.875.265-4 .25l-2.125.014C22 42 22 42 20 40c-.266-1.875-.266-1.875-.25-4l-.015-2.126c.383-2.713 1.424-3.754 4.14-4.14zM50 21.875C53 22 53 22 54 23c.125 3 .125 3 0 6-1 1-1 1-4 1.125C47 30 47 30 46 29c-.125-3-.125-3 0-6 1-1 1-1 4-1.125zM70 38h6v6h-6v-6zM76 32h6v6h-6v-6zM64 32h6v6h-6v-6zM70 26h6v6h-6v-6zM46 38h8v4h-8v-4zM56 34h4v4h-4v-4zM40 34h4v4h-4v-4z" />
+                </g>
+            </svg>
+        `;
         document.body.appendChild(floatBtn);
     }
 
@@ -494,6 +546,18 @@
         saveBtn.textContent = '保存配置';
         saveBtn.addEventListener('click', saveConfig);
         buttonsDiv.appendChild(saveBtn);
+
+        // 临时关闭深色模式按钮
+        if(isDarkMode==true){
+            const disableDarkModeBtn = document.createElement('button');
+            disableDarkModeBtn.className = 'gamepad-config-btn gamepad-disableDarkMode-btn'
+            disableDarkModeBtn.textContent = '临时关闭深色模式';
+            disableDarkModeBtn.addEventListener('click', function() {
+                disableDarkMode(); 
+                this.remove(); // 移除按钮
+            });
+            buttonsDiv.appendChild(disableDarkModeBtn);
+        }
 
         // 重置按钮
         const resetBtn = document.createElement('button');
@@ -622,7 +686,7 @@
         initGamepad();
         createFloatingButton();
         GM_registerMenuCommand('配置手柄按键映射', createConfigWindow);
-        console.log("扇贝单词手柄控制脚本已加载");
+        console.log("扇贝单词手柄控制已加载");
     }
 
     // 等待DOM加载完成后初始化
